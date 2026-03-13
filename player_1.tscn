@@ -1,0 +1,189 @@
+[gd_scene format=3 uid="uid://tbilhxkahn4c"]
+
+[sub_resource type="GDScript" id="GDScript_cy177"]
+script/source = "extends CharacterBody3D
+
+var SPEED = 7
+var JUMP_VELOCITY = 100
+var SPRINT_SPEED_X = 0
+var SPRINT_SPEED_Z = 0
+var ANGLE_SPEED = 9.899494937
+var IS_SPRINTING = false
+
+func _physics_process(delta: float) -> void:
+	
+	#var rotation_speed = 20
+	#var rotation_direction = Input.get_axis(\"a\", \"d\")
+	#rotation.y -= rotation_direction * rotation_speed * delta
+	
+	
+	if Input.is_action_pressed(\"s\"):
+		position.x -= SPEED * delta
+	if Input.is_action_pressed(\"w\"):
+		position.x += SPEED * delta
+	if Input.is_action_pressed(\"a\"):
+		position.z -= SPEED * delta
+	if Input.is_action_pressed(\"d\"):
+		position.z += SPEED * delta
+		
+	if Input.is_action_pressed(\"shift\"):
+		print(\"sprintspeedx\",SPRINT_SPEED_X)
+		if Input.is_action_pressed(\"w\"):
+			if SPRINT_SPEED_X < 0:
+				SPRINT_SPEED_X += 12 * delta
+			SPRINT_SPEED_X += 10 * delta
+			SPRINT_SPEED_X = min(SPRINT_SPEED_X,20)
+			position.x += SPRINT_SPEED_X * delta
+		elif Input.is_action_pressed(\"s\"):
+			if SPRINT_SPEED_X > 0:
+				SPRINT_SPEED_X -= 12 * delta
+			SPRINT_SPEED_X -= 10 * delta
+			SPRINT_SPEED_X = max(SPRINT_SPEED_X,-20)
+			position.x += SPRINT_SPEED_X * delta
+		else:
+			if SPRINT_SPEED_X > 0:
+				SPRINT_SPEED_X -= 40 * delta
+				SPRINT_SPEED_X = max(SPRINT_SPEED_X,0)
+			if SPRINT_SPEED_X < 0:
+				SPRINT_SPEED_X += 40 * delta
+				SPRINT_SPEED_X = min(SPRINT_SPEED_X,0)
+			
+		if Input.is_action_pressed(\"d\"):
+			if SPRINT_SPEED_Z < 0:
+				SPRINT_SPEED_Z += 12 * delta
+			SPRINT_SPEED_Z += 10 * delta
+			SPRINT_SPEED_Z = min(SPRINT_SPEED_Z,20)
+			position.z += SPRINT_SPEED_Z * delta
+		elif Input.is_action_pressed(\"a\"):
+			if SPRINT_SPEED_Z > 0:
+				SPRINT_SPEED_Z -= 12 * delta
+			SPRINT_SPEED_Z -= 10 * delta
+			SPRINT_SPEED_Z = max(SPRINT_SPEED_Z,-20)
+			position.z += SPRINT_SPEED_Z * delta
+		else:
+			if SPRINT_SPEED_Z > 0:
+				SPRINT_SPEED_Z -= 40 * delta
+				SPRINT_SPEED_Z = max(SPRINT_SPEED_Z,0)
+			if SPRINT_SPEED_Z < 0:
+				SPRINT_SPEED_Z += 40 * delta
+				SPRINT_SPEED_Z = min(SPRINT_SPEED_Z,0)
+				
+	if not is_on_floor():
+		velocity += get_gravity() * 4 * delta
+	if Input.is_action_just_pressed(\"jump\") and is_on_floor():
+		print(\"positiony\",position.y)
+		velocity.y = JUMP_VELOCITY
+		velocity.y = max(position.y,10)
+	move_and_slide()
+	
+	
+"
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_squ5q"]
+
+[sub_resource type="GDScript" id="GDScript_bxx23"]
+script/source = "extends MeshInstance3D
+
+func _physics_process(_delta: float) -> void:
+
+	if Input.is_action_pressed(\"w\"):
+		rotation_degrees.y = 90 
+	if Input.is_action_pressed(\"d\"):
+		rotation_degrees.y = 0
+	if Input.is_action_pressed(\"s\"):
+		rotation_degrees.y = -90
+	if Input.is_action_pressed(\"a\"):
+		rotation_degrees.y = 180
+	if Input.is_action_pressed(\"w\") and Input.is_action_pressed(\"a\"):
+		rotation_degrees.y = 135
+	if Input.is_action_pressed(\"w\") and Input.is_action_pressed(\"d\"):
+		rotation_degrees.y = 45
+	if Input.is_action_pressed(\"s\") and Input.is_action_pressed(\"d\"):
+		rotation_degrees.y = -45
+	if Input.is_action_pressed(\"s\") and Input.is_action_pressed(\"a\"):
+		rotation_degrees.y = -135
+"
+
+[sub_resource type="PrismMesh" id="PrismMesh_cy177"]
+
+[sub_resource type="Animation" id="Animation_cy177"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharacterBody3D/MeshInstance3D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_squ5q"]
+resource_name = "regular_jump"
+length = 1.000642
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharacterBody3D/MeshInstance3D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3048, 0.65, 1.000642),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(1, 1, 1), Vector3(1, 0.6987436, 1), Vector3(1, 1.249, 1), Vector3(1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bxx23"]
+_data = {
+&"RESET": SubResource("Animation_cy177"),
+&"regular_jump": SubResource("Animation_squ5q")
+}
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_bxx23"]
+points = PackedVector3Array(-0.12520654, -0.532801, -0.4805069, 0.022783129, 0.4760704, 0.49888408, 0.16971254, 0.5591441, 0.46417162, 0.23105091, -0.8035912, 0.32045516, 0.40741014, 0.651043, -0.24352328, -0.4827893, 0.59484255, 0.082213186, -0.3628679, -0.68231165, 0.2896967, 0.46904355, -0.65452886, -0.06627126, -0.12744367, 0.8427015, -0.33810276, -0.39343542, -0.6839421, -0.24471663, 0.43825462, 0.62330925, 0.20084947, 0.0841477, 0.977454, 0.11479468, -0.06820232, -0.9764576, -0.12927033, 0.20054972, -0.56312895, -0.4514544, -0.18552664, 0.59545326, -0.4534751, -0.27336287, 0.59226835, 0.40775412, -0.0069364863, -0.47682306, 0.49966025, 0.37582088, -0.5886136, 0.31695515, 0.111579016, 0.5630594, -0.48117727, -0.41725034, 0.5278656, -0.27049688, -0.48454633, -0.59697217, -0.06650971, -0.27974695, 0.90856135, 0.05333608, -0.25019687, -0.8807117, 0.20531891, 0.263647, -0.90277094, -0.1273943, 0.29336792, 0.8715263, -0.15719566, 0.3734115, -0.5263189, -0.32824618, 0.4996626, 0.47664148, -0.0068885577, 0.053105574, 0.8750009, 0.32470253, -0.15454252, -0.5908538, 0.4658794, -0.09727988, -0.7823577, -0.39818847, -0.3876489, -0.49817133, 0.31564978, -0.30067965, -0.58799505, -0.38890144)
+
+[sub_resource type="GDScript" id="GDScript_squ5q"]
+script/source = "extends Node3D
+
+func _physics_process(delta: float) -> void:
+	
+	if Input.is_action_just_pressed(\"ui_right\"):
+		rotation.y = 30 * delta
+		max(rotation.y,30)
+	if Input.is_action_pressed(\"ui_left\"):
+		rotation.y = -30 * delta
+	if Input.is_action_pressed(\"ui_down\"):
+		rotation.y = 0 * delta
+"
+
+[node name="player1" type="Node3D" unique_id=1896944895]
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=1118658261]
+script = SubResource("GDScript_cy177")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D" unique_id=1705168808]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.003112793, 0)
+mesh = SubResource("CapsuleMesh_squ5q")
+script = SubResource("GDScript_bxx23")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CharacterBody3D/MeshInstance3D" unique_id=2106924265]
+transform = Transform3D(0.65, 0, 0, 0, -4.371139e-08, -0.09, 0, 1, -3.934025e-09, 0, 1, 0)
+mesh = SubResource("PrismMesh_cy177")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CharacterBody3D/MeshInstance3D" unique_id=1589140665]
+root_node = NodePath("../../..")
+libraries/ = SubResource("AnimationLibrary_bxx23")
+autoplay = &"regular_jump"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D" unique_id=623784398]
+shape = SubResource("ConvexPolygonShape3D_bxx23")
+
+[node name="Node3D" type="Node3D" parent="CharacterBody3D" unique_id=200428206]
+script = SubResource("GDScript_squ5q")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D/Node3D" unique_id=1466186090]
+transform = Transform3D(1.731372e-07, 0.41059154, -0.9118194, -4.790145e-08, 0.9118194, 0.41059154, 1, -2.74112e-08, 1.7753779e-07, -4.2, 2.696, 0.21)
