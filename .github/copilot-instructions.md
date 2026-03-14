@@ -3,7 +3,7 @@
 ## Project Snapshot
 - Engine: Godot 4.6 (see project.godot features).
 - Primary scene: res://level.tscn.
-- Player content exists in both res://player_1.tscn (CharacterBody3D-based) and res://player.tscn (RigidBody3D-based).
+- Active player scene: res://player_1.tscn (CharacterBody3D-based).
 - There is a custom editor addon at res://addons/godot_mcp for MCP/WebSocket command handling.
 
 ## High-Value Working Rules
@@ -47,7 +47,6 @@
 - Re-check InputMap actions if any control-related code was touched.
 
 ## Suggested Refactor Priorities (When Requested)
-- Consolidate player controller approach (CharacterBody3D vs RigidBody3D) to reduce duplicated movement logic.
 - Normalize action names to one input scheme and remove stale action references.
 - Move large embedded scripts from .tscn files into versionable .gd files.
 - Add lightweight smoke tests/check scripts for plugin command processor behavior.
