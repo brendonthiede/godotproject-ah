@@ -2,6 +2,9 @@ extends CharacterBody3D
 
 const SPEED: float = 7.0
 const JUMP_VELOCITY: float = 10.0
+const BASE_GRAVITY_MULTIPLIER: float = 4.0
+const FALL_MULTIPLIER: float = 5.0
+const LOW_JUMP_MULTIPLIER: float = 6.0
 
 var sprint_speed_x: float = 0.0
 var sprint_speed_z: float = 0.0
@@ -64,7 +67,13 @@ func _physics_process(delta: float) -> void:
 	velocity.z = horizontal_velocity_z
 				
 	if not is_on_floor():
-		velocity += get_gravity() * 4 * delta
+		var gravity: Vector3 = get_gravity()
+		if velocity.y < 0.0:
+			velocity += gravity * FALL_MULTIPLIER * delta
+		elif velocity.y > 0.0 and not Input.is_action_pressed("jump"):
+			velocity += gravity * LOW_JUMP_MULTIPLIER * delta
+		else:
+			velocity += gravity * BASE_GRAVITY_MULTIPLIER * delta
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 	move_and_slide()
