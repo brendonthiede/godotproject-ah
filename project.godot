@@ -18,6 +18,10 @@ config/features=PackedStringArray("4.6", "Mobile")
 
 window/size/mode=1
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg")
+
 [importer_defaults]
 
 animation_library={
