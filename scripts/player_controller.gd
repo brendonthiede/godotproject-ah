@@ -2,7 +2,7 @@ extends CharacterBody3D
 
 const SPEED: float = 7.0
 const JUMP_VELOCITY: float = 10.0
-const BASE_GRAVITY_MULTIPLIER: float = 4.0
+const BASE_GRAVITY_MULTIPLIER: float = 3.0
 const FALL_MULTIPLIER: float = 5.0
 const LOW_JUMP_MULTIPLIER: float = 6.0
 
