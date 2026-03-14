@@ -14,7 +14,8 @@ func _physics_process(delta: float) -> void:
 	
 	if Input.is_action_pressed("move_forward"):
 		apply_central_force(-transform.basis.z * speed * delta)
-		
+	
+	# Error at (19, 12): Function "is_on_floor()" not found in base self.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 		
