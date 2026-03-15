@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://tbilhxkahn4c" path="res://player_1.tscn" id="1_vonw3"]
 [ext_resource type="Texture2D" uid="uid://cw0g1jaw7c5yw" path="res://icon.svg" id="2_vonw3"]
-[ext_resource type="Script" path="res://scripts/death_area.gd" id="3_death_area"]
+[ext_resource type="Script" uid="uid://b1nydj43iqcur" path="res://scripts/death_area.gd" id="3_death_area"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5xgho"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)

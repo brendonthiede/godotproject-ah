@@ -11,6 +11,7 @@
 - Do not hand-edit massive PackedVector arrays or generated collision data in scene files.
 - Keep gameplay logic in external .gd files when possible instead of embedding long script/source blocks inside .tscn.
 - Preserve existing node names and paths unless a rename is required, because animations and scripts rely on fixed NodePath values.
+- By default, ignore `res://addons/**` when making core project changes; addon code is maintained and tested separately unless addon work is explicitly requested.
 - For addon changes, keep @tool compatibility and EditorPlugin lifecycle behavior intact.
 
 ## Input and Movement Conventions
@@ -43,10 +44,5 @@
 - Open the project in Godot and ensure scenes load without parser errors.
 - Verify edited scripts attach correctly and no missing resource paths were introduced.
 - Test player movement, jump behavior, and camera behavior in the main level.
-- If addon code changed, verify plugin still initializes and command responses are emitted.
+- If addon code changed (only when explicitly in scope), verify plugin still initializes and command responses are emitted.
 - Re-check InputMap actions if any control-related code was touched.
-
-## Suggested Refactor Priorities (When Requested)
-- Normalize action names to one input scheme and remove stale action references.
-- Move large embedded scripts from .tscn files into versionable .gd files.
-- Add lightweight smoke tests/check scripts for plugin command processor behavior.
