@@ -83,31 +83,45 @@ func _get_horizontal_state(delta: float) -> Dictionary:
 		"sprint_speed_z": next_sprint_speed_z,
 	}
 
-func _apply_air_gravity(delta: float) -> void:
+func _get_air_gravity_adjusted_velocity_y(delta: float, velocity_y: float) -> float:
 	if _is_player_on_floor():
-		return
+		return velocity_y
 
 	var gravity: Vector3 = _get_player_gravity()
-	if velocity.y < 0.0:
-		velocity += gravity * FALL_MULTIPLIER * delta
-	elif velocity.y > 0.0 and not _is_action_pressed("jump"):
-		velocity += gravity * LOW_JUMP_MULTIPLIER * delta
+	if velocity_y < 0.0:
+		velocity_y += gravity.y * FALL_MULTIPLIER * delta
+	elif velocity_y > 0.0 and not _is_action_pressed("jump"):
+		velocity_y += gravity.y * LOW_JUMP_MULTIPLIER * delta
 	else:
-		velocity += gravity * BASE_GRAVITY_MULTIPLIER * delta
+		velocity_y += gravity.y * BASE_GRAVITY_MULTIPLIER * delta
 
-func _apply_jump() -> void:
+	return velocity_y
+
+func _get_jump_adjusted_velocity_y(velocity_y: float) -> float:
 	if _is_action_just_pressed("jump") and _is_player_on_floor():
-		velocity.y = JUMP_VELOCITY
+		return JUMP_VELOCITY
+
+	return velocity_y
+
+func _get_vertical_state(delta: float) -> Dictionary:
+	var velocity_y: float = velocity.y
+	velocity_y = _get_air_gravity_adjusted_velocity_y(delta, velocity_y)
+	velocity_y = _get_jump_adjusted_velocity_y(velocity_y)
+
+	return {
+		"velocity_y": velocity_y,
+	}
 
 func _physics_process(delta: float) -> void:
 	var horizontal_state := _get_horizontal_state(delta)
+	var vertical_state := _get_vertical_state(delta)
 	var horizontal_velocity: Vector2 = horizontal_state["horizontal_velocity"]
+	var velocity_y: float = vertical_state["velocity_y"]
 	sprint_speed_x = horizontal_state["sprint_speed_x"]
 	sprint_speed_z = horizontal_state["sprint_speed_z"]
 
 	velocity.x = horizontal_velocity.x
+	velocity.y = velocity_y
 	velocity.z = horizontal_velocity.y
 
-	_apply_air_gravity(delta)
-	_apply_jump()
 	_move_player()
