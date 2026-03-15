@@ -7,8 +7,8 @@ class ControllerDouble:
 
 	var pressed_actions: Dictionary = {}
 	var just_pressed_actions: Dictionary = {}
-	var on_floor_override: bool = true
-	var gravity_override: Vector3 = Vector3(0.0, -9.8, 0.0)
+	var test_on_floor_override: bool = true
+	var test_gravity_override: Vector3 = Vector3(0.0, -9.8, 0.0)
 	var move_calls: int = 0
 
 	func _is_action_pressed(action: StringName) -> bool:
@@ -18,10 +18,10 @@ class ControllerDouble:
 		return just_pressed_actions.get(action, false)
 
 	func _is_player_on_floor() -> bool:
-		return on_floor_override
+		return test_on_floor_override
 
 	func _get_player_gravity() -> Vector3:
-		return gravity_override
+		return test_gravity_override
 
 	func _move_player() -> void:
 		move_calls += 1
@@ -131,8 +131,8 @@ func test_forward_sprint_speed_is_clamped_to_maximum() -> void:
 
 func test_airborne_falling_uses_fall_multiplier() -> void:
 	var controller := _make_controller()
-	controller.on_floor_override = false
-	controller.gravity_override = Vector3(0.0, -10.0, 0.0)
+	controller.test_on_floor_override = false
+	controller.test_gravity_override = Vector3(0.0, -10.0, 0.0)
 	controller.velocity = Vector3(0.0, -1.0, 0.0)
 
 	controller._physics_process(0.5)
@@ -141,8 +141,8 @@ func test_airborne_falling_uses_fall_multiplier() -> void:
 
 func test_airborne_rising_without_jump_held_uses_low_jump_multiplier() -> void:
 	var controller := _make_controller()
-	controller.on_floor_override = false
-	controller.gravity_override = Vector3(0.0, -10.0, 0.0)
+	controller.test_on_floor_override = false
+	controller.test_gravity_override = Vector3(0.0, -10.0, 0.0)
 	controller.velocity = Vector3(0.0, 4.0, 0.0)
 
 	controller._physics_process(0.5)
@@ -151,8 +151,8 @@ func test_airborne_rising_without_jump_held_uses_low_jump_multiplier() -> void:
 
 func test_airborne_rising_with_jump_held_uses_base_gravity_multiplier() -> void:
 	var controller := _make_controller()
-	controller.on_floor_override = false
-	controller.gravity_override = Vector3(0.0, -10.0, 0.0)
+	controller.test_on_floor_override = false
+	controller.test_gravity_override = Vector3(0.0, -10.0, 0.0)
 	controller.velocity = Vector3(0.0, 4.0, 0.0)
 	controller.pressed_actions = {"jump": true}
 
@@ -162,8 +162,8 @@ func test_airborne_rising_with_jump_held_uses_base_gravity_multiplier() -> void:
 
 func test_airborne_zero_vertical_velocity_uses_base_gravity_multiplier() -> void:
 	var controller := _make_controller()
-	controller.on_floor_override = false
-	controller.gravity_override = Vector3(0.0, -10.0, 0.0)
+	controller.test_on_floor_override = false
+	controller.test_gravity_override = Vector3(0.0, -10.0, 0.0)
 	controller.velocity = Vector3.ZERO
 
 	controller._physics_process(0.5)
@@ -181,8 +181,8 @@ func test_jump_from_floor_sets_jump_velocity() -> void:
 
 func test_jump_just_pressed_in_air_does_not_override_airborne_velocity() -> void:
 	var controller := _make_controller()
-	controller.on_floor_override = false
-	controller.gravity_override = Vector3(0.0, -10.0, 0.0)
+	controller.test_on_floor_override = false
+	controller.test_gravity_override = Vector3(0.0, -10.0, 0.0)
 	controller.velocity = Vector3(0.0, 4.0, 0.0)
 	controller.just_pressed_actions = {"jump": true}
 	controller.pressed_actions = {"jump": true}

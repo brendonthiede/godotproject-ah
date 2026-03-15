@@ -63,19 +63,25 @@ func _apply_sprint_speed(delta: float, horizontal_velocity: float, sprint_speed:
 
 	return Vector2(sprint_speed, horizontal_velocity)
 
-func _get_horizontal_velocity(delta: float) -> Vector2:
+func _get_horizontal_state(delta: float) -> Dictionary:
 	var horizontal_velocity := _get_base_horizontal_velocity()
+	var next_sprint_speed_x: float = sprint_speed_x
+	var next_sprint_speed_z: float = sprint_speed_z
 
 	if _is_action_pressed("shift"):
-		var x_axis_result := _apply_sprint_speed(delta, horizontal_velocity.x, sprint_speed_x, "w", "s")
-		sprint_speed_x = x_axis_result.x
+		var x_axis_result := _apply_sprint_speed(delta, horizontal_velocity.x, next_sprint_speed_x, "w", "s")
+		next_sprint_speed_x = x_axis_result.x
 		horizontal_velocity.x = x_axis_result.y
 
-		var z_axis_result := _apply_sprint_speed(delta, horizontal_velocity.y, sprint_speed_z, "d", "a")
-		sprint_speed_z = z_axis_result.x
+		var z_axis_result := _apply_sprint_speed(delta, horizontal_velocity.y, next_sprint_speed_z, "d", "a")
+		next_sprint_speed_z = z_axis_result.x
 		horizontal_velocity.y = z_axis_result.y
 
-	return horizontal_velocity
+	return {
+		"horizontal_velocity": horizontal_velocity,
+		"sprint_speed_x": next_sprint_speed_x,
+		"sprint_speed_z": next_sprint_speed_z,
+	}
 
 func _apply_air_gravity(delta: float) -> void:
 	if _is_player_on_floor():
@@ -94,7 +100,11 @@ func _apply_jump() -> void:
 		velocity.y = JUMP_VELOCITY
 
 func _physics_process(delta: float) -> void:
-	var horizontal_velocity := _get_horizontal_velocity(delta)
+	var horizontal_state := _get_horizontal_state(delta)
+	var horizontal_velocity: Vector2 = horizontal_state["horizontal_velocity"]
+	sprint_speed_x = horizontal_state["sprint_speed_x"]
+	sprint_speed_z = horizontal_state["sprint_speed_z"]
+
 	velocity.x = horizontal_velocity.x
 	velocity.z = horizontal_velocity.y
 
